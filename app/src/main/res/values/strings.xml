@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RecipeList</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_new_board">New Board</string>
+    <string name="action_delete">Delete</string>
+    <string name="hello_blank_fragment">...</string>
+</resources>
