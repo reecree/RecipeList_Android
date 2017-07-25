@@ -56,11 +56,11 @@ public class MyBoardsActivity extends AppCompatActivity {
                 inflater.inflate(R.menu.context_menu_boards, menu);
             }
         });
-        _listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 v
             }
-        });
+        });*/
 
         myBoardsCallback = new PDKCallback() {
             @Override

@@ -4,4 +4,6 @@
     <string name="action_new_board">New Board</string>
     <string name="action_delete">Delete</string>
     <string name="hello_blank_fragment">...</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_my_boards">MyBoardsActivity</string>
 </resources>
