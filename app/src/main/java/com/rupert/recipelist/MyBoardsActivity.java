@@ -56,11 +56,11 @@ public class MyBoardsActivity extends AppCompatActivity {
                 inflater.inflate(R.menu.context_menu_boards, menu);
             }
         });
-        /*_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        _listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                v
+                getBoardPins(pos);
             }
-        });*/
+        });
 
         myBoardsCallback = new PDKCallback() {
             @Override
@@ -129,6 +129,14 @@ public class MyBoardsActivity extends AppCompatActivity {
     private void createNewBoard() {
         /*Intent i = new Intent(this, CreateBoardActivity.class);
         startActivity(i);*/
+    }
+
+    private void getBoardPins(int position) {
+        Intent i = new Intent(this, MyPinsActivity.class);
+        PDKBoard selectedBoard = _boardsAdapter.getBoardList().get(position);
+        i.putExtra(Globals.getBoardIdKey(), selectedBoard.getUid());
+        i.putExtra(Globals.getBoardNameKey(), selectedBoard.getName());
+        startActivity(i);
     }
 
     private void deleteBoard(int position) {

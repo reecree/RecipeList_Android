@@ -103,8 +103,8 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void  onMyPins() {
-        //Intent i = new Intent(this, MyPinsActivity.class);
-        //startActivity(i);
+        Intent i = new Intent(this, MyPinsActivity.class);
+        startActivity(i);
     }
 
     private void  onMyBoards() {

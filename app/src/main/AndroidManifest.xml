@@ -30,6 +30,10 @@
             android:name=".MyBoardsActivity"
             android:label="@string/title_activity_my_boards" >
         </activity>
+        <activity
+            android:name=".MyPinsActivity"
+            android:label="@string/title_activity_my_pins" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
