@@ -18,6 +18,7 @@
         android:verticalSpacing="10dip"
         android:padding="10dip"
         android:cacheColorHint="@android:color/transparent"
-        ></GridView>
+        >
+    </GridView>
 
 </RelativeLayout>

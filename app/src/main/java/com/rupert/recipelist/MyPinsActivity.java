@@ -3,8 +3,8 @@ package com.rupert.recipelist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -27,6 +27,7 @@ import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class MyPinsActivity extends AppCompatActivity {
@@ -36,6 +37,7 @@ public class MyPinsActivity extends AppCompatActivity {
     private GridView _gridView;
     private PinsAdapter _pinAdapter;
     private String _boardId;
+    private HashSet<Integer> _highlightedItems;
     private boolean _loading = false;
     private static final String PIN_FIELDS = "id,link,creator,image,counts,note,created_at,board,metadata";
     @Override
@@ -43,6 +45,7 @@ public class MyPinsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pins);
         Bundle extras = getIntent().getExtras();
+        _highlightedItems = new HashSet<Integer>();
 
         if(extras != null) {
             setTitle(extras.getString(Globals.getBoardNameKey()));
@@ -64,6 +67,20 @@ public class MyPinsActivity extends AppCompatActivity {
                 inflater.inflate(R.menu.context_menu_boards, menu);
             }
         });
+        _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                if(!_highlightedItems.contains(pos)) {
+                    Drawable border = getResources().getDrawable(R.drawable.highlighted_border);
+                    v.setBackground(border);
+                    _highlightedItems.add(pos);
+                }
+                else {
+                    Drawable border = getResources().getDrawable(R.drawable.border);
+                    v.setBackground(border);
+                    _highlightedItems.remove(pos);
+                }
+            }
+        });
         _gridView.setAdapter(_pinAdapter);
         myPinsCallback = new PDKCallback() {
             @Override
@@ -80,8 +97,6 @@ public class MyPinsActivity extends AppCompatActivity {
             }
         };
         _loading = true;
-
-        fetchPins();
     }
 
     @Override
@@ -170,7 +185,10 @@ public class MyPinsActivity extends AppCompatActivity {
 
         @Override
         public Object getItem(int position) {
-            return position;
+            if(_pinList == null || position >= _pinList.size())
+                return null;
+            else
+                return _pinList.get(position);
         }
 
         @Override
