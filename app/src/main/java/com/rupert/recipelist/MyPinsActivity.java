@@ -19,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKClient;
@@ -34,11 +35,13 @@ public class MyPinsActivity extends AppCompatActivity {
 
     private PDKCallback myPinsCallback;
     private PDKResponse myPinsResponse;
+    private Button ingredientsButton;
     private GridView _gridView;
     private PinsAdapter _pinAdapter;
     private String _boardId;
     private HashSet<Integer> _highlightedItems;
     private boolean _loading = false;
+    private boolean _isIngredientClickable = false;
     private static final String PIN_FIELDS = "id,link,creator,image,counts,note,created_at,board,metadata";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,14 @@ public class MyPinsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_pins);
         Bundle extras = getIntent().getExtras();
         _highlightedItems = new HashSet<Integer>();
+
+        ingredientsButton = (Button) findViewById(R.id.ingredient_button);
+        ingredientsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onIngredients();
+            }
+        });
 
         if(extras != null) {
             setTitle(extras.getString(Globals.getBoardNameKey()));
@@ -79,6 +90,20 @@ public class MyPinsActivity extends AppCompatActivity {
                     v.setBackground(border);
                     _highlightedItems.remove(pos);
                 }
+                if(!_highlightedItems.isEmpty()) {
+                    Drawable clickableCircleButton = getResources().getDrawable(R.drawable.circle_button);
+                    ingredientsButton.setBackground(clickableCircleButton);
+                    _isIngredientClickable = true;
+                    //ingredientsButton.setClickable(false);
+                    //ingredientsButton.setVisibility(View.VISIBLE);
+                }
+                else {
+                    Drawable unclickableCircleButton = getResources().getDrawable(R.drawable.unclickable_circle_button);
+                    ingredientsButton.setBackground(unclickableCircleButton);
+                    _isIngredientClickable = false;
+                    //ingredientsButton.setClickable(false);
+                    //ingredientsButton.setVisibility(View.INVISIBLE);
+                }
             }
         });
         _gridView.setAdapter(_pinAdapter);
@@ -97,6 +122,14 @@ public class MyPinsActivity extends AppCompatActivity {
             }
         };
         _loading = true;
+    }
+
+    private void onIngredients() {
+        Intent i = new Intent(this, IngredientsActivity.class);
+
+        //i.putExtra(Globals.getBoardIdKey(), selectedBoard.getUid());
+        //i.putExtra(Globals.getBoardNameKey(), selectedBoard.getName());
+        startActivity(i);
     }
 
     @Override
@@ -137,7 +170,7 @@ public class MyPinsActivity extends AppCompatActivity {
         startActivity(i);*/
     }
 
-    private void deletePin(int position) {
+    /*private void deletePin(int position) {
         PDKClient.getInstance().deletePin(_pinAdapter.getPinList().get(position).getUid(),
                 new PDKCallback() {
                     @Override
@@ -151,7 +184,7 @@ public class MyPinsActivity extends AppCompatActivity {
                         Log.e(getClass().getName(), "error: " + exception.getDetailMessage());
                     }
                 });
-    }
+    }*/
 
     private void loadNext() {
         if (!_loading && myPinsResponse.hasNext()) {
@@ -221,6 +254,14 @@ public class MyPinsActivity extends AppCompatActivity {
 
             PDKPin pinItem = _pinList.get(position);
             if (pinItem != null) {
+                if(_highlightedItems.contains(position)) {
+                    Drawable border = getResources().getDrawable(R.drawable.highlighted_border);
+                    convertView.setBackground(border);
+                }
+                else {
+                    Drawable border = getResources().getDrawable(R.drawable.border);
+                    convertView.setBackground(border);
+                }
                 viewHolder.textViewItem.setText(pinItem.getNote());
                 Picasso.with(_context.getApplicationContext()).load(pinItem.getImageUrl()).into(viewHolder.imageView);
             }

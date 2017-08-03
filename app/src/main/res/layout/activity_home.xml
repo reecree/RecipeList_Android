@@ -26,7 +26,7 @@ tools:context="com.rupert.recipelist.HomeActivity">
 <Button
     android:layout_width="200dip"
     android:layout_height="wrap_content"
-    android:text="My Pins"
+    android:text="@string/button_view_pins"
     android:id="@+id/pins_button"
     android:layout_centerHorizontal="true"
     android:layout_below="@+id/name_textview"
@@ -36,42 +36,21 @@ tools:context="com.rupert.recipelist.HomeActivity">
 <Button
     android:layout_width="200dip"
     android:layout_height="wrap_content"
-    android:text="My Boards"
+    android:text="@string/button_view_boards"
     android:id="@+id/boards_button"
     android:layout_centerHorizontal="true"
     android:layout_below="@+id/pins_button"
     android:background="@null"
     />
 
-<Button
-    android:layout_width="200dip"
-    android:layout_height="wrap_content"
-    android:id="@+id/following_button"
-    android:text="My Following"
-    android:layout_below="@+id/boards_button"
-    android:layout_centerHorizontal="true"
-    android:background="@null"
-    />
-
-<Button
-    android:layout_width="200dip"
-    android:layout_height="wrap_content"
-    android:id="@+id/path_button"
-    android:text="Get Any Path"
-    android:layout_below="@+id/following_button"
-    android:layout_centerHorizontal="true"
-    android:background="@null"
-    />
-
-<Button
+    <Button
     android:layout_width="200dip"
     android:layout_height="wrap_content"
     android:id="@+id/logout_button"
-    android:text="Logout"
-    android:layout_below="@+id/path_button"
-    android:layout_centerHorizontal="true"
-    android:background="@null"
-    />
+    android:text="@string/button_logout"
+        android:background="@null"
+        android:layout_below="@+id/boards_button"
+        android:layout_alignStart="@+id/boards_button" />
 
 
 </RelativeLayout>

@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
 public class HomeActivity extends AppCompatActivity {
 
     private static boolean DEBUG = true;
-    private Button pinsButton, boardsButton, followingButton, logoutButton, pathButton;
+    private Button pinsButton, boardsButton, logoutButton;
     private TextView nameTv;
     private ImageView profileIv;
     private final String USER_FIELDS = "id,image,counts,created_at,first_name,last_name,bio";
@@ -51,22 +51,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onMyBoards();
-            }
-        });
-
-        followingButton = (Button) findViewById(R.id.following_button);
-        followingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onMyFollowing();
-            }
-        });
-
-        pathButton = (Button) findViewById(R.id.path_button);
-        pathButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGetPath();
             }
         });
 
@@ -110,16 +94,6 @@ public class HomeActivity extends AppCompatActivity {
     private void  onMyBoards() {
         Intent i = new Intent(this, MyBoardsActivity.class);
         startActivity(i);
-    }
-
-    private void  onGetPath() {
-        //Intent i = new Intent(this, AnyPathActivity.class);
-        //startActivity(i);
-    }
-
-    private void  onMyFollowing() {
-        //Intent i = new Intent(this, FollowingActivity.class);
-        //startActivity(i);
     }
 
     private void  onLogout() {

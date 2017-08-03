@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
         private PDKClient pdkClient;
-        Button loginButton;
+        private Button loginButton;
         private final String APP_ID = "4912766377932110327";
 
         @Override

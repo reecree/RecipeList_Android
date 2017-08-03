@@ -11,4 +11,12 @@
 
     <string name="board_name_key">boardName</string>
     <string name="board_id_key">boardName</string>
+
+    <string name="button_view_pins">My Pins</string>
+    <string name="button_view_boards">My Boards</string>
+    <string name="button_logout">Logout</string>
+    <string name="button_get_ingredients">Ingredients</string>
+    <string name="button_plus_sign">+</string>
+
+    <string name="pinterest_login">Pinterest Login</string>
 </resources>
