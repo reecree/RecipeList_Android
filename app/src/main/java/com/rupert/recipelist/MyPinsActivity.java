@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -21,12 +22,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 
+import com.google.gson.Gson;
 import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKClient;
 import com.pinterest.android.pdk.PDKException;
 import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -127,8 +134,11 @@ public class MyPinsActivity extends AppCompatActivity {
     private void onIngredients() {
         Intent i = new Intent(this, IngredientsActivity.class);
 
-        //i.putExtra(Globals.getBoardIdKey(), selectedBoard.getUid());
-        //i.putExtra(Globals.getBoardNameKey(), selectedBoard.getName());
+        List<PDKPin> selectedPins = new ArrayList<PDKPin>();
+        for (int pos : _highlightedItems) {
+            selectedPins.add((PDKPin) _pinAdapter.getItem(pos));
+        }
+        i.putExtra(Globals.getIngredientArrayKey(), new Gson().toJson(selectedPins));
         startActivity(i);
     }
 

@@ -1,36 +1,25 @@
 package com.rupert.recipelist;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+
+import com.google.gson.Gson;
 import com.pinterest.android.pdk.PDKCallback;
-import com.pinterest.android.pdk.PDKClient;
-import com.pinterest.android.pdk.PDKException;
 import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
-import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+
 public class IngredientsActivity extends AppCompatActivity {
 
     private PDKCallback myPinsCallback;
@@ -47,6 +36,31 @@ public class IngredientsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
         Bundle extras = getIntent().getExtras();
+        String extraObject = null;
+        if (extras != null) {
+            extraObject = extras.getString(Globals.getIngredientArrayKey());
+        }
+
+        ArrayList<PDKPin> pinList = new Gson().fromJson(extraObject, ArrayList.class);
+        for( PDKPin pin : pinList) {
+            String metadata = pin.getMetadata();
+            try {
+                JSONObject jsonObject = new JSONObject(metadata);
+                JSONObject recipe = jsonObject.getJSONObject("recipe");
+                JSONArray ingredientArray = recipe.getJSONArray("ingredients");
+                for (int i = 0; i < ingredientArray.length(); i++) {
+                    JSONArray ingredients = ingredientArray.getJSONObject(i).getJSONArray("ingredients");
+                    for (int j = 0; j < ingredients.length(); j++) {
+                        JSONObject ingredient = ingredients.getJSONObject(j);
+                        String name = ingredient.getString("name");
+                        String amount = ingredient.getString("amount");
+
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 

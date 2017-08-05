@@ -4,6 +4,7 @@ public class Globals{
 
     private final static String BoardNameKey = "boardName";
     private final static String BoardIdKey = "boardId";
+    private final static String IngredientArrayKey = "ingrArray";
 
     private Globals(){}
 
@@ -13,5 +14,9 @@ public class Globals{
 
     public static String getBoardIdKey() {
         return BoardIdKey;
+    }
+
+    public static String getIngredientArrayKey() {
+        return IngredientArrayKey;
     }
 }
