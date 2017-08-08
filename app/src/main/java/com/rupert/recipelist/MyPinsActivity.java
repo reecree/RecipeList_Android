@@ -21,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.pinterest.android.pdk.PDKCallback;
@@ -87,6 +88,14 @@ public class MyPinsActivity extends AppCompatActivity {
         });
         _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                String metadata = ((PDKPin) _pinAdapter.getItem(pos)).getMetadata();
+
+                if(metadata == null || metadata.isEmpty() || metadata.equals(Globals.getEmptyJson())) {
+                    Toast toast = Toast.makeText(getApplicationContext(), Globals.getNoIngredientMessage(), Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+
                 if(!_highlightedItems.contains(pos)) {
                     Drawable border = getResources().getDrawable(R.drawable.highlighted_border);
                     v.setBackground(border);
@@ -134,9 +143,10 @@ public class MyPinsActivity extends AppCompatActivity {
     private void onIngredients() {
         Intent i = new Intent(this, IngredientsActivity.class);
 
-        List<PDKPin> selectedPins = new ArrayList<PDKPin>();
+        List<String> selectedPins = new ArrayList<String>();
         for (int pos : _highlightedItems) {
-            selectedPins.add((PDKPin) _pinAdapter.getItem(pos));
+            PDKPin pin = (PDKPin) _pinAdapter.getItem(pos);
+            selectedPins.add(/*((PDKPin) _pinAdapter.getItem(pos))*/pin.getMetadata());
         }
         i.putExtra(Globals.getIngredientArrayKey(), new Gson().toJson(selectedPins));
         startActivity(i);

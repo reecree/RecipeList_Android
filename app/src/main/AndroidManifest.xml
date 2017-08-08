@@ -34,6 +34,10 @@
             android:name=".MyPinsActivity"
             android:label="@string/title_activity_my_pins" >
         </activity>
+        <activity
+            android:name=".IngredientsActivity"
+            android:label="@string/title_activity_ingredients" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>

@@ -10,55 +10,42 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.google.gson.Gson;
-import com.pinterest.android.pdk.PDKBoard;
-import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKPin;
-import com.pinterest.android.pdk.PDKResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class IngredientsActivity extends AppCompatActivity {
 
-    private PDKCallback myPinsCallback;
-    private PDKResponse myPinsResponse;
-    private Button ingredientsButton;
     private ListView _listView;
-    //private Map<String,String> _ingredientList;
-
-    private boolean _loading = false;
-
-    private static final String PIN_FIELDS = "id,link,creator,image,counts,note,created_at,board,metadata";
+    private IngredientAdapter _ingredientAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
         _listView = (ListView) findViewById(R.id.ingredient_list_view);
+        _ingredientAdapter = new IngredientAdapter(this);
+
+        _listView.setAdapter(_ingredientAdapter);
         Bundle extras = getIntent().getExtras();
         String extraObject = null;
         if (extras != null) {
             extraObject = extras.getString(Globals.getIngredientArrayKey());
         }
 
-        ArrayList<PDKPin> pinList = new Gson().fromJson(extraObject, ArrayList.class);
+        ArrayList<String> metadataList = new Gson().fromJson(extraObject, ArrayList.class);
         List<Ingredient> ingredientList = new ArrayList<Ingredient>();
-        for( PDKPin pin : pinList) {
-            String metadata = pin.getMetadata();
+        for( String metadata : metadataList) {
             try {
                 JSONObject jsonObject = new JSONObject(metadata);
                 JSONObject recipe = jsonObject.getJSONObject("recipe");
@@ -67,13 +54,13 @@ public class IngredientsActivity extends AppCompatActivity {
                     JSONArray ingredientCategory = ingredientArray.getJSONObject(i).getJSONArray("ingredients");
                     for (int j = 0; j < ingredientCategory.length(); j++) {
                         JSONObject ingredient = ingredientCategory.getJSONObject(j);
-
                         ingredientList.add(new Ingredient(ingredient.getString("name"), ingredient.getString("amount")));
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            _ingredientAdapter.setIngredientList(ingredientList);
         }
 
 
@@ -87,19 +74,13 @@ public class IngredientsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_my_pins, menu);
+        //getMenuInflater().inflate(R.menu.menu_my_pins, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_new_pin:
-                //createNewPin();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class IngredientAdapter extends BaseAdapter {
@@ -152,9 +133,9 @@ public class IngredientsActivity extends AppCompatActivity {
                 viewHolder = (IngredientsActivity.IngredientAdapter.ViewHolderItem) convertView.getTag();
             }
 
-            PDKBoard boardItem = _boardList.get(position);
-            if (boardItem != null) {
-                viewHolder.textViewItem.setText(boardItem.getName());
+            Ingredient ingredient = _ingredientList.get(position);
+            if (ingredient != null) {
+                viewHolder.textViewItem.setText(ingredient.getEasyIngredientDescription());
             }
 
             return convertView;
