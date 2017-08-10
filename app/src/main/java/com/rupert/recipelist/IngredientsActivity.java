@@ -44,7 +44,7 @@ public class IngredientsActivity extends AppCompatActivity {
         }
 
         ArrayList<String> metadataList = new Gson().fromJson(extraObject, ArrayList.class);
-        List<Ingredient> ingredientList = new ArrayList<Ingredient>();
+        ShoppingList ingredientList = new ShoppingList();
         for( String metadata : metadataList) {
             try {
                 JSONObject jsonObject = new JSONObject(metadata);
@@ -62,8 +62,6 @@ public class IngredientsActivity extends AppCompatActivity {
             }
             _ingredientAdapter.setIngredientList(ingredientList);
         }
-
-
     }
 
     @Override
@@ -85,21 +83,21 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private class IngredientAdapter extends BaseAdapter {
 
-        private List<Ingredient> _ingredientList;
+        private ShoppingList _ingredientList;
         private Context _context;
 
         public IngredientAdapter(Context c) {
             _context = c;
         }
 
-        public void setIngredientList(List<Ingredient> list) {
-            if (_ingredientList == null) _ingredientList = new ArrayList<Ingredient>();
+        public void setIngredientList(ShoppingList list) {
+            if (_ingredientList == null) _ingredientList = new ShoppingList();
             if (list == null) _ingredientList.clear();
             else _ingredientList.addAll(list);
             notifyDataSetChanged();
         }
 
-        public List<Ingredient> getIngredientList() {
+        public ShoppingList getIngredientList() {
             return _ingredientList;
         }
 
@@ -135,7 +133,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
             Ingredient ingredient = _ingredientList.get(position);
             if (ingredient != null) {
-                viewHolder.textViewItem.setText(ingredient.getEasyIngredientDescription());
+                viewHolder.textViewItem.setText(ingredient.getIngredientDescription());
             }
 
             return convertView;
