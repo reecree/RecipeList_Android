@@ -11,4 +11,6 @@ public class Globals{
     public final static String NO_INGREDIENT_MESSAGE = "Error:\nSelected Pin Has No Ingredient Information";
 
     public final static String EMPTY_JSON = "{}";
+
+    public final static String ACCESS_TOKEN_FILE_NAME = "atPinFile";
 }
