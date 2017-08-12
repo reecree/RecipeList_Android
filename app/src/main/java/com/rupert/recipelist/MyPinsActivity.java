@@ -6,12 +6,9 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.JsonReader;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,10 +26,6 @@ import com.pinterest.android.pdk.PDKException;
 import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -78,15 +70,6 @@ public class MyPinsActivity extends AppCompatActivity {
         _pinAdapter = new PinsAdapter(this);
         _gridView = (GridView) findViewById(R.id.grid_view);
 
-        _gridView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v,
-                                            ContextMenu.ContextMenuInfo menuInfo) {
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.context_menu_boards, menu);
-            }
-        });
         _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 String metadata = ((PDKPin) _pinAdapter.getItem(pos)).getMetadata();
@@ -142,8 +125,7 @@ public class MyPinsActivity extends AppCompatActivity {
 
         List<String> selectedPins = new ArrayList<String>();
         for (int pos : _highlightedItems) {
-            PDKPin pin = (PDKPin) _pinAdapter.getItem(pos);
-            selectedPins.add(/*((PDKPin) _pinAdapter.getItem(pos))*/pin.getMetadata());
+            selectedPins.add(((PDKPin) _pinAdapter.getItem(pos)).getMetadata());
         }
         i.putExtra(Globals.INGREDIENT_KEY, new Gson().toJson(selectedPins));
         startActivity(i);
@@ -174,34 +156,17 @@ public class MyPinsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_new_pin:
-                //createNewPin();
+            case R.id.action_logout:
+                PDKClient.getInstance().logout();
+                Globals.RemoveAccessToken(this);
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    private void createNewPin() {
-        /*Intent i = new Intent(this, CreatePinActivity.class);
-        startActivity(i);*/
-    }
-
-    /*private void deletePin(int position) {
-        PDKClient.getInstance().deletePin(_pinAdapter.getPinList().get(position).getUid(),
-                new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        Log.d(getClass().getName(), "Response: " + response.getStatusCode());
-                        fetchPins();
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        Log.e(getClass().getName(), "error: " + exception.getDetailMessage());
-                    }
-                });
-    }*/
 
     private void loadNext() {
         if (!_loading && myPinsResponse.hasNext()) {

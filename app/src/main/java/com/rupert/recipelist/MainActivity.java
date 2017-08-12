@@ -26,14 +26,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         PDKClient.configureInstance(this, Globals.APP_ID);
         PDKClient.getInstance().onConnect(this);
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        _loginButton = (Button) findViewById(R.id.login);
-        _loginButton.setOnClickListener(this);
         _pdkClient = PDKClient.configureInstance(this, Globals.APP_ID);
         _pdkClient.onConnect(this);
         //pdkClient.setDebugMode(true);
@@ -43,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             _pdkClient.setAccessToken(accessToken);
             onLoginSuccess();
         }
+
+        setContentView(R.layout.activity_main);
+
+        _loginButton = (Button) findViewById(R.id.login);
+        _loginButton.setOnClickListener(this);
     }
 
     private String checkStoredAccessToken() {

@@ -1,14 +1,12 @@
 <resources>
     <string name="app_name">RecipeList</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_new_board">New Board</string>
-    <string name="action_delete">Delete</string>
+    <string name="action_logout">Logout</string>
     <string name="hello_blank_fragment">...</string>
+
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_my_boards">MyBoardsActivity</string>
     <string name="title_activity_my_pins">MyPinsActivity</string>
     <string name="title_activity_ingredients">IngredientsActivity</string>
-    <string name="action_new_pin">New Pin</string>
 
     <string name="board_name_key">boardName</string>
     <string name="board_id_key">boardName</string>

@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,15 +45,6 @@ public class MyBoardsActivity extends AppCompatActivity {
         _listView = (ListView) findViewById(R.id.listView);
 
         _listView.setAdapter(_boardsAdapter);
-        _listView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v,
-                                            ContextMenu.ContextMenuInfo menuInfo) {
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.context_menu_boards, menu);
-            }
-        });
         _listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 getBoardPins(pos);
@@ -98,18 +87,6 @@ public class MyBoardsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch (item.getItemId()) {
-            case R.id.action_board_delete:
-                deleteBoard(info.position);
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_my_boards, menu);
         return true;
@@ -118,8 +95,12 @@ public class MyBoardsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_new_board:
-                createNewBoard();
+            case R.id.action_logout:
+                PDKClient.getInstance().logout();
+                Globals.RemoveAccessToken(this);
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -137,21 +118,6 @@ public class MyBoardsActivity extends AppCompatActivity {
         i.putExtra(Globals.BOARD_ID_KEY, selectedBoard.getUid());
         i.putExtra(Globals.BOARD_NAME_KEY, selectedBoard.getName());
         startActivity(i);
-    }
-
-    private void deleteBoard(int position) {
-        PDKClient.getInstance().deleteBoard(_boardsAdapter.getBoardList().get(position).getUid(), new PDKCallback() {
-            @Override
-            public void onSuccess(PDKResponse response) {
-                Log.d(getClass().getName(), "Response: " + response.getStatusCode());
-                fetchBoards();
-            }
-
-            @Override
-            public void onFailure(PDKException exception) {
-                Log.e(getClass().getName(), "error: " + exception.getDetailMessage());
-            }
-        });
     }
 
     private class BoardsAdapter extends BaseAdapter {

@@ -2,6 +2,7 @@ package com.rupert.recipelist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 
 import com.google.gson.Gson;
+import com.pinterest.android.pdk.PDKClient;
 import com.pinterest.android.pdk.PDKPin;
 
 import org.json.JSONArray;
@@ -65,20 +67,24 @@ public class IngredientsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.menu_my_pins, menu);
+        getMenuInflater().inflate(R.menu.menu_ingredients, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                PDKClient.getInstance().logout();
+                Globals.RemoveAccessToken(this);
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private class IngredientAdapter extends BaseAdapter {

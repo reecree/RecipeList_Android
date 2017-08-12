@@ -97,6 +97,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void  onLogout() {
         PDKClient.getInstance().logout();
+        Globals.RemoveAccessToken(this);
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
