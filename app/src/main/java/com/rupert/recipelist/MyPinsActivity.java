@@ -43,7 +43,7 @@ public class MyPinsActivity extends AppCompatActivity {
 
     private PDKCallback myPinsCallback;
     private PDKResponse myPinsResponse;
-    private Button ingredientsButton;
+    private ImageView _ingredientsButton;
     private GridView _gridView;
     private PinsAdapter _pinAdapter;
     private String _boardId;
@@ -58,17 +58,18 @@ public class MyPinsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         _highlightedItems = new HashSet<Integer>();
 
-        ingredientsButton = (Button) findViewById(R.id.ingredient_button);
-        ingredientsButton.setOnClickListener(new View.OnClickListener() {
+        _ingredientsButton= (ImageView) findViewById(R.id.ingredient_button);
+        _ingredientsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onIngredients();
+                if(_isIngredientClickable)
+                    onIngredients();
             }
         });
 
         if(extras != null) {
-            setTitle(extras.getString(Globals.getBoardNameKey()));
-            _boardId = extras.getString(Globals.getBoardIdKey());
+            setTitle(extras.getString(Globals.BOARD_NAME_KEY));
+            _boardId = extras.getString(Globals.BOARD_ID_KEY);
         }
         else {
             setTitle("My Pins");
@@ -90,8 +91,8 @@ public class MyPinsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 String metadata = ((PDKPin) _pinAdapter.getItem(pos)).getMetadata();
 
-                if(metadata == null || metadata.isEmpty() || metadata.equals(Globals.getEmptyJson())) {
-                    Toast toast = Toast.makeText(getApplicationContext(), Globals.getNoIngredientMessage(), Toast.LENGTH_SHORT);
+                if(metadata == null || metadata.isEmpty() || metadata.equals(Globals.EMPTY_JSON)) {
+                    Toast toast = Toast.makeText(getApplicationContext(), Globals.NO_INGREDIENT_MESSAGE, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
@@ -108,17 +109,13 @@ public class MyPinsActivity extends AppCompatActivity {
                 }
                 if(!_highlightedItems.isEmpty()) {
                     Drawable clickableCircleButton = getResources().getDrawable(R.drawable.circle_button);
-                    ingredientsButton.setBackground(clickableCircleButton);
+                    _ingredientsButton.setBackground(clickableCircleButton);
                     _isIngredientClickable = true;
-                    //ingredientsButton.setClickable(false);
-                    //ingredientsButton.setVisibility(View.VISIBLE);
                 }
                 else {
                     Drawable unclickableCircleButton = getResources().getDrawable(R.drawable.unclickable_circle_button);
-                    ingredientsButton.setBackground(unclickableCircleButton);
+                    _ingredientsButton.setBackground(unclickableCircleButton);
                     _isIngredientClickable = false;
-                    //ingredientsButton.setClickable(false);
-                    //ingredientsButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -148,7 +145,7 @@ public class MyPinsActivity extends AppCompatActivity {
             PDKPin pin = (PDKPin) _pinAdapter.getItem(pos);
             selectedPins.add(/*((PDKPin) _pinAdapter.getItem(pos))*/pin.getMetadata());
         }
-        i.putExtra(Globals.getIngredientArrayKey(), new Gson().toJson(selectedPins));
+        i.putExtra(Globals.INGREDIENT_KEY, new Gson().toJson(selectedPins));
         startActivity(i);
     }
 

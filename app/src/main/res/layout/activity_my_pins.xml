@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.rupert.recipelist.MyPinsActivity">
 
-
-    <Button
-        android:id="@+id/ingredient_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginRight="32dp"
-        android:text="@string/button_plus_sign"
-        android:background="@drawable/unclickable_circle_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="0dp"
@@ -40,6 +28,19 @@
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1"></GridView>
+        tools:layout_constraintTop_creator="1" />
+
+    <ImageView
+        android:id="@+id/ingredient_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="32dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/unclickable_circle_button"
+        android:gravity="center"
+        android:src="@drawable/ic_list_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

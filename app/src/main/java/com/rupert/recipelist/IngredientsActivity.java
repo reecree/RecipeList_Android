@@ -40,7 +40,7 @@ public class IngredientsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String extraObject = null;
         if (extras != null) {
-            extraObject = extras.getString(Globals.getIngredientArrayKey());
+            extraObject = extras.getString(Globals.INGREDIENT_KEY);
         }
 
         ArrayList<String> metadataList = new Gson().fromJson(extraObject, ArrayList.class);

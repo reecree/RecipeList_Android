@@ -81,7 +81,7 @@ public class Ingredient {
     }
 
     private String prettifyIngredientType(String word) {
-        return word.replaceAll("\\,.*$", "");
+        return word.replaceAll("\\,.*$|\\s*\\(+.*\\)+\\s*", "");
     }
 
     private String parseIngredientUnits(String amount) {
@@ -107,10 +107,10 @@ public class Ingredient {
     }
 
     private int getFirstNumber(String word) {
-        Pattern p = Pattern.compile("(^\\d+)");
+        Pattern p = Pattern.compile("(^\\d+ |^\\d+$)");
         Matcher m = p.matcher(word);
         if(m.find()) {
-            return Integer.valueOf(m.group());
+            return Integer.valueOf(m.group().trim());
         }
         return 0;
     }

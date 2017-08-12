@@ -134,8 +134,8 @@ public class MyBoardsActivity extends AppCompatActivity {
     private void getBoardPins(int position) {
         Intent i = new Intent(this, MyPinsActivity.class);
         PDKBoard selectedBoard = _boardsAdapter.getBoardList().get(position);
-        i.putExtra(Globals.getBoardIdKey(), selectedBoard.getUid());
-        i.putExtra(Globals.getBoardNameKey(), selectedBoard.getName());
+        i.putExtra(Globals.BOARD_ID_KEY, selectedBoard.getUid());
+        i.putExtra(Globals.BOARD_NAME_KEY, selectedBoard.getName());
         startActivity(i);
     }
 

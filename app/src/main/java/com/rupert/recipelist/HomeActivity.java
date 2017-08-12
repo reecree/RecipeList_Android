@@ -28,7 +28,6 @@ public class HomeActivity extends AppCompatActivity {
     private final String USER_FIELDS = "id,image,counts,created_at,first_name,last_name,bio";
     PDKUser user;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

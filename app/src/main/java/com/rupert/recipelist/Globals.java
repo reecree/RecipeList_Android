@@ -2,33 +2,13 @@ package com.rupert.recipelist;
 
 public class Globals{
 
-    private final static String BoardNameKey = "boardName";
-    private final static String BoardIdKey = "boardId";
-    private final static String IngredientArrayKey = "ingrArray";
+    public final static String APP_ID = "4912766377932110327";
 
-    private final static String NoIngredientMessage = "Error:\nSelected Pin Has No Ingredient Information";
+    public final static String BOARD_NAME_KEY = "boardName";
+    public final static String BOARD_ID_KEY = "boardId";
+    public final static String INGREDIENT_KEY = "ingrArray";
 
-    private final static String EmptyJson = "{}";
+    public final static String NO_INGREDIENT_MESSAGE = "Error:\nSelected Pin Has No Ingredient Information";
 
-    private Globals(){}
-
-    public static String getBoardNameKey() {
-        return BoardNameKey;
-    }
-
-    public static String getBoardIdKey() {
-        return BoardIdKey;
-    }
-
-    public static String getIngredientArrayKey() {
-        return IngredientArrayKey;
-    }
-
-    public static String getNoIngredientMessage() {
-        return NoIngredientMessage;
-    }
-
-    public static String getEmptyJson() {
-        return EmptyJson;
-    }
+    public final static String EMPTY_JSON = "{}";
 }
