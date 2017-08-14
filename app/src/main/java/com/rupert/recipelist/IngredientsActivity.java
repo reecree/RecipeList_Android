@@ -10,7 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,6 +33,8 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private ListView _listView;
     private IngredientAdapter _ingredientAdapter;
+    private View _selectedIngredientView = null;
+    private int _selectedIngredientPos = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,12 @@ public class IngredientsActivity extends AppCompatActivity {
         _ingredientAdapter = new IngredientAdapter(this);
 
         _listView.setAdapter(_ingredientAdapter);
+        _listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
+                onListItemClicked(pos, v);
+            }
+        });
+
         Bundle extras = getIntent().getExtras();
         String extraObject = null;
         if (extras != null) {
@@ -67,6 +78,37 @@ public class IngredientsActivity extends AppCompatActivity {
             }
         }
         _ingredientAdapter.setIngredientList(ingredientList);
+    }
+
+    private void onListItemClicked(int pos, View v) {
+        if(_selectedIngredientView != null && _selectedIngredientPos == pos) {
+            TextView subView = (TextView) _selectedIngredientView.findViewById(R.id.title);
+            subView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            ImageView addButton = (ImageView) _selectedIngredientView.findViewById(R.id.add_button);
+            addButton.setVisibility(View.GONE);
+            ImageView removeButton = (ImageView) _selectedIngredientView.findViewById(R.id.remove_button);
+            removeButton.setVisibility(View.GONE);
+            _selectedIngredientPos = -1;
+            _selectedIngredientView = null;
+            return;
+        }
+        else if(_selectedIngredientView != null) {
+            TextView subView = (TextView) _selectedIngredientView.findViewById(R.id.title);
+            subView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            ImageView addButton = (ImageView) _selectedIngredientView.findViewById(R.id.add_button);
+            addButton.setVisibility(View.GONE);
+            ImageView removeButton = (ImageView) _selectedIngredientView.findViewById(R.id.remove_button);
+            removeButton.setVisibility(View.GONE);
+        }
+
+        TextView subView = (TextView) v.findViewById(R.id.title);
+        subView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        ImageView addButton = (ImageView) v.findViewById(R.id.add_button);
+        addButton.setVisibility(View.VISIBLE);
+        ImageView removeButton = (ImageView) v.findViewById(R.id.remove_button);
+        removeButton.setVisibility(View.VISIBLE);
+        _selectedIngredientPos = pos;
+        _selectedIngredientView = v;
     }
 
     @Override

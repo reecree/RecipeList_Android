@@ -16,12 +16,10 @@ import java.util.regex.Pattern;
 public class ShoppingList {
 
     private Map<String, Ingredient> _combinedIngredientMap;
-    //private List<String> _lookupArray;
     private Map<String, List<String>> _categories;
 
     public ShoppingList() {
         _combinedIngredientMap = new HashMap<String,Ingredient>();
-        //_lookupArray = new ArrayList<String>();
         _categories = new ArrayMap<String, List<String>>();
     }
 
@@ -44,7 +42,6 @@ public class ShoppingList {
             }
 
             _combinedIngredientMap.put(ingredientPrettyName, ingredient);
-            //_lookupArray.add(ingredientPrettyName);
         }
         else {
             String ingredientUnits = ingredient.getIngredientUnits();
@@ -68,7 +65,6 @@ public class ShoppingList {
 
                     ingredient.setPrettyName(ingredientNameWithUnits);
                     _combinedIngredientMap.put(ingredientNameWithUnits, ingredient);
-                    //_lookupArray.add(ingredientPrettyName);
                 }
             }
         }
@@ -101,7 +97,6 @@ public class ShoppingList {
             count += categorySection.size();
         }
         return null;
-        //return _combinedIngredientMap.get(_lookupArray.get(pos));
     }
 
     private String appendUnitsToName(String originalName, String units) {

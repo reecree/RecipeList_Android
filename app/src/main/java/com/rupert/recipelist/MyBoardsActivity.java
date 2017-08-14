@@ -107,11 +107,6 @@ public class MyBoardsActivity extends AppCompatActivity {
         }
     }
 
-    private void createNewBoard() {
-        /*Intent i = new Intent(this, CreateBoardActivity.class);
-        startActivity(i);*/
-    }
-
     private void getBoardPins(int position) {
         Intent i = new Intent(this, MyPinsActivity.class);
         PDKBoard selectedBoard = _boardsAdapter.getBoardList().get(position);

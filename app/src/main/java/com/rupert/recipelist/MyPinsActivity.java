@@ -72,34 +72,7 @@ public class MyPinsActivity extends AppCompatActivity {
 
         _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
-                String metadata = ((PDKPin) _pinAdapter.getItem(pos)).getMetadata();
-
-                if(metadata == null || metadata.isEmpty() || metadata.equals(Globals.EMPTY_JSON)) {
-                    Toast toast = Toast.makeText(getApplicationContext(), Globals.NO_INGREDIENT_MESSAGE, Toast.LENGTH_SHORT);
-                    toast.show();
-                    return;
-                }
-
-                if(!_highlightedItems.contains(pos)) {
-                    Drawable border = getResources().getDrawable(R.drawable.highlighted_border);
-                    v.setBackground(border);
-                    _highlightedItems.add(pos);
-                }
-                else {
-                    Drawable border = getResources().getDrawable(R.drawable.border);
-                    v.setBackground(border);
-                    _highlightedItems.remove(pos);
-                }
-                if(!_highlightedItems.isEmpty()) {
-                    Drawable clickableCircleButton = getResources().getDrawable(R.drawable.circle_button);
-                    _ingredientsButton.setBackground(clickableCircleButton);
-                    _isIngredientClickable = true;
-                }
-                else {
-                    Drawable unclickableCircleButton = getResources().getDrawable(R.drawable.unclickable_circle_button);
-                    _ingredientsButton.setBackground(unclickableCircleButton);
-                    _isIngredientClickable = false;
-                }
+                onGridItemClicked(pos, v);
             }
         });
         _gridView.setAdapter(_pinAdapter);
@@ -118,6 +91,37 @@ public class MyPinsActivity extends AppCompatActivity {
             }
         };
         _loading = true;
+    }
+
+    private void onGridItemClicked(int pos, View v) {
+        String metadata = ((PDKPin) _pinAdapter.getItem(pos)).getMetadata();
+
+        if(metadata == null || metadata.isEmpty() || metadata.equals(Globals.EMPTY_JSON)) {
+            Toast toast = Toast.makeText(getApplicationContext(), Globals.NO_INGREDIENT_MESSAGE, Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+
+        if(!_highlightedItems.contains(pos)) {
+            Drawable border = getResources().getDrawable(R.drawable.highlighted_border);
+            v.setBackground(border);
+            _highlightedItems.add(pos);
+        }
+        else {
+            Drawable border = getResources().getDrawable(R.drawable.border);
+            v.setBackground(border);
+            _highlightedItems.remove(pos);
+        }
+        if(!_highlightedItems.isEmpty()) {
+            Drawable clickableCircleButton = getResources().getDrawable(R.drawable.circle_button);
+            _ingredientsButton.setBackground(clickableCircleButton);
+            _isIngredientClickable = true;
+        }
+        else {
+            Drawable unclickableCircleButton = getResources().getDrawable(R.drawable.unclickable_circle_button);
+            _ingredientsButton.setBackground(unclickableCircleButton);
+            _isIngredientClickable = false;
+        }
     }
 
     private void onIngredients() {

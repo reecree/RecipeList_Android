@@ -40,6 +40,7 @@
         android:background="@drawable/unclickable_circle_button"
         android:gravity="center"
         android:src="@drawable/ic_list_black"
+        android:contentDescription="@string/button_my_pins_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
