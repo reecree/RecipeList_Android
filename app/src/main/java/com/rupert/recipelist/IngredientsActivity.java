@@ -54,16 +54,19 @@ public class IngredientsActivity extends AppCompatActivity {
                 JSONArray ingredientArray = recipe.getJSONArray("ingredients");
                 for (int i = 0; i < ingredientArray.length(); i++) {
                     JSONArray ingredientCategory = ingredientArray.getJSONObject(i).getJSONArray("ingredients");
+                    String category = ingredientArray.getJSONObject(i).getString("category");
                     for (int j = 0; j < ingredientCategory.length(); j++) {
                         JSONObject ingredient = ingredientCategory.getJSONObject(j);
-                        ingredientList.add(new Ingredient(ingredient.getString("name"), ingredient.getString("amount")));
+                        ingredientList.add(new Ingredient(ingredient.getString("name"),
+                                                          ingredient.getString("amount"),
+                                                          category));
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            _ingredientAdapter.setIngredientList(ingredientList);
         }
+        _ingredientAdapter.setIngredientList(ingredientList);
     }
 
     @Override
@@ -123,16 +126,15 @@ public class IngredientsActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             IngredientsActivity.IngredientAdapter.ViewHolderItem viewHolder;
-
             if (convertView == null) {
                 LayoutInflater inflater = ((Activity) _context).getLayoutInflater();
-                convertView = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+                convertView = inflater.inflate(R.layout.list_item_ingredient, parent, false);
 
                 viewHolder = new IngredientsActivity.IngredientAdapter.ViewHolderItem();
-                viewHolder.textViewItem = (TextView) convertView.findViewById(android.R.id.text1);
+                viewHolder.textViewItem = (TextView) convertView.findViewById(R.id.title);
+                viewHolder.headerItem = (TextView) convertView.findViewById(R.id.separator);
 
                 convertView.setTag(viewHolder);
-
             } else {
                 viewHolder = (IngredientsActivity.IngredientAdapter.ViewHolderItem) convertView.getTag();
             }
@@ -141,12 +143,20 @@ public class IngredientsActivity extends AppCompatActivity {
             if (ingredient != null) {
                 viewHolder.textViewItem.setText(ingredient.getIngredientDescription());
             }
+            if (ingredient != null && ingredient.isFirst()) {
+                viewHolder.headerItem.setText(ingredient.getCategory());
+                viewHolder.headerItem.setVisibility(View.VISIBLE);
+            }
+            else {
+                viewHolder.headerItem.setVisibility(View.GONE);
+            }
 
             return convertView;
         }
 
         private class ViewHolderItem {
             TextView textViewItem;
+            TextView headerItem;
         }
     }
 }

@@ -12,13 +12,16 @@ public class Ingredient {
     private String _prettyIngredientName;
     private Fraction _ingredientAmount;
     private String _ingredientUnits;
+    private String _category;
+    private boolean _isHeader = false;
 
-    public Ingredient(String name, String amount) {
+    public Ingredient(String name, String amount, String category) {
         _rawIngredientName = name;
         _rawIngredientAmount = amount;
         _prettyIngredientName = prettifyIngredientType(name);
         _ingredientAmount = parseIngredientAmount(amount);
         _ingredientUnits = parseIngredientUnits(amount);
+        _category = category;
     }
 
     public String getPrettyIngredientName() {
@@ -31,6 +34,18 @@ public class Ingredient {
 
     public String getIngredientUnits() {
         return _ingredientUnits;
+    }
+
+    public String getCategory() {
+        return _category;
+    }
+
+    public boolean isFirst() {
+        return _isHeader;
+    }
+
+    public void setIsHeader(boolean isHeader) {
+        _isHeader = isHeader;
     }
 
     public void setPrettyName(String name) {

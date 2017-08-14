@@ -1,6 +1,9 @@
 package com.rupert.recipelist;
 
+import android.support.v4.util.ArrayMap;
+
 import org.apache.commons.math3.fraction.Fraction;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,11 +16,13 @@ import java.util.regex.Pattern;
 public class ShoppingList {
 
     private Map<String, Ingredient> _combinedIngredientMap;
-    private List<String> _lookupArray;
+    //private List<String> _lookupArray;
+    private Map<String, List<String>> _categories;
 
     public ShoppingList() {
         _combinedIngredientMap = new HashMap<String,Ingredient>();
-        _lookupArray = new ArrayList<String>();
+        //_lookupArray = new ArrayList<String>();
+        _categories = new ArrayMap<String, List<String>>();
     }
 
     public void add(Ingredient ingredient) {
@@ -27,8 +32,19 @@ public class ShoppingList {
         Ingredient storedIngredient = _combinedIngredientMap.get(ingredientPrettyName);
 
         if(storedIngredient == null) {
+            if(!_categories.containsKey(ingredient.getCategory())) {
+                ArrayList<String> categoryList = new ArrayList<String>();
+                categoryList.add(ingredientPrettyName);
+                _categories.put(ingredient.getCategory(), categoryList);
+                ingredient.setIsHeader(true);
+            }
+            else {
+                ingredient.setIsHeader(false);
+                _categories.get(ingredient.getCategory()).add(ingredientPrettyName);
+            }
+
             _combinedIngredientMap.put(ingredientPrettyName, ingredient);
-            _lookupArray.add(ingredientPrettyName);
+            //_lookupArray.add(ingredientPrettyName);
         }
         else {
             String ingredientUnits = ingredient.getIngredientUnits();
@@ -38,9 +54,21 @@ public class ShoppingList {
                 Ingredient storedIngredientWithUnits = _combinedIngredientMap.get(ingredientNameWithUnits);
                 if(storedIngredientWithUnits == null ||
                         !storedIngredientWithUnits.addIngredientAmount(ingredientAmount, ingredientUnits)) {
+                    if(!_categories.containsKey(ingredient.getCategory())) {
+                        ArrayList<String> categoryList = new ArrayList<String>();
+                        categoryList.add(ingredientNameWithUnits);
+                        _categories.put(ingredient.getCategory(), categoryList);
+                        ingredient.setIsHeader(true);
+                    }
+
+                    else {
+                        ingredient.setIsHeader(false);
+                        _categories.get(ingredient.getCategory()).add(ingredientNameWithUnits);
+                    }
+
                     ingredient.setPrettyName(ingredientNameWithUnits);
                     _combinedIngredientMap.put(ingredientNameWithUnits, ingredient);
-                    _lookupArray.add(ingredientPrettyName);
+                    //_lookupArray.add(ingredientPrettyName);
                 }
             }
         }
@@ -65,7 +93,15 @@ public class ShoppingList {
     }
 
     public Ingredient get(int pos) {
-        return _combinedIngredientMap.get(_lookupArray.get(pos));
+        int count = 0;
+        for(List<String> categorySection : _categories.values()) {
+            if(pos < count + categorySection.size()) {
+                return _combinedIngredientMap.get(categorySection.get(pos - count));
+            }
+            count += categorySection.size();
+        }
+        return null;
+        //return _combinedIngredientMap.get(_lookupArray.get(pos));
     }
 
     private String appendUnitsToName(String originalName, String units) {
