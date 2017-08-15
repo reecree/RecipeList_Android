@@ -1,10 +1,14 @@
 package com.rupert.recipelist;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +19,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -27,7 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class IngredientsActivity extends AppCompatActivity {
 
@@ -80,14 +89,26 @@ public class IngredientsActivity extends AppCompatActivity {
         _ingredientAdapter.setIngredientList(ingredientList);
     }
 
+    private void onRemoveOk() {
+        if(_selectedIngredientPos >= 0) {
+            _ingredientAdapter.removeItem(_selectedIngredientPos);
+            onListItemClicked(_selectedIngredientPos, _selectedIngredientView);
+        }
+    }
+
+    private void setVisibility(View v, List<Integer> ids, int visibility) {
+        for(int i : ids) {
+            View view = v.findViewById(i);
+            view.setVisibility(visibility);
+        }
+    }
+
     private void onListItemClicked(int pos, View v) {
         if(_selectedIngredientView != null && _selectedIngredientPos == pos) {
             TextView subView = (TextView) _selectedIngredientView.findViewById(R.id.title);
             subView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            ImageView addButton = (ImageView) _selectedIngredientView.findViewById(R.id.add_button);
-            addButton.setVisibility(View.GONE);
-            ImageView removeButton = (ImageView) _selectedIngredientView.findViewById(R.id.remove_button);
-            removeButton.setVisibility(View.GONE);
+            setVisibility(_selectedIngredientView,
+                          Arrays.asList(R.id.edit_button, R.id.remove_button), View.GONE);
             _selectedIngredientPos = -1;
             _selectedIngredientView = null;
             return;
@@ -95,18 +116,13 @@ public class IngredientsActivity extends AppCompatActivity {
         else if(_selectedIngredientView != null) {
             TextView subView = (TextView) _selectedIngredientView.findViewById(R.id.title);
             subView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-            ImageView addButton = (ImageView) _selectedIngredientView.findViewById(R.id.add_button);
-            addButton.setVisibility(View.GONE);
-            ImageView removeButton = (ImageView) _selectedIngredientView.findViewById(R.id.remove_button);
-            removeButton.setVisibility(View.GONE);
+            setVisibility(_selectedIngredientView,
+                    Arrays.asList(R.id.edit_button, R.id.remove_button), View.GONE);
         }
 
         TextView subView = (TextView) v.findViewById(R.id.title);
-        subView.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        ImageView addButton = (ImageView) v.findViewById(R.id.add_button);
-        addButton.setVisibility(View.VISIBLE);
-        ImageView removeButton = (ImageView) v.findViewById(R.id.remove_button);
-        removeButton.setVisibility(View.VISIBLE);
+        subView.setBackgroundColor(getResources().getColor(R.color.colorGrey));
+        setVisibility(v, Arrays.asList(R.id.edit_button, R.id.remove_button), View.VISIBLE);
         _selectedIngredientPos = pos;
         _selectedIngredientView = v;
     }
@@ -132,6 +148,33 @@ public class IngredientsActivity extends AppCompatActivity {
         }
     }
 
+    private void onRemoveButtonClicked() {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+
+        String ingredientName = ((Ingredient)_ingredientAdapter.getItem(_selectedIngredientPos)).getPrettyIngredientName();
+        builder.setTitle(getResources().getString(R.string.ingredient_remove_alert))
+                .setMessage(String.format(Locale.US,getResources().getString(R.string.ingredient_remove_message),ingredientName))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onRemoveOk();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void onEditButtonClicked() {
+    }
+
     private class IngredientAdapter extends BaseAdapter {
 
         private ShoppingList _ingredientList;
@@ -148,6 +191,11 @@ public class IngredientsActivity extends AppCompatActivity {
             notifyDataSetChanged();
         }
 
+        public void removeItem(int pos) {
+            _ingredientList.remove(pos);
+            notifyDataSetChanged();
+        }
+
         public ShoppingList getIngredientList() {
             return _ingredientList;
         }
@@ -159,7 +207,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
         @Override
         public Object getItem(int pos) {
-            return _ingredientList == null || _ingredientList.size() >= pos ? null : _ingredientList.get(pos);
+            return _ingredientList == null || _ingredientList.size() <= pos ? null : _ingredientList.get(pos);
         }
 
         @Override
@@ -175,6 +223,8 @@ public class IngredientsActivity extends AppCompatActivity {
                 viewHolder = new IngredientsActivity.IngredientAdapter.ViewHolderItem();
                 viewHolder.textViewItem = (TextView) convertView.findViewById(R.id.title);
                 viewHolder.headerItem = (TextView) convertView.findViewById(R.id.separator);
+                viewHolder.editButton = (ImageView) convertView.findViewById(R.id.edit_button);
+                viewHolder.removeButton = (ImageView) convertView.findViewById(R.id.remove_button);
 
                 convertView.setTag(viewHolder);
             } else {
@@ -184,6 +234,19 @@ public class IngredientsActivity extends AppCompatActivity {
             Ingredient ingredient = _ingredientList.get(position);
             if (ingredient != null) {
                 viewHolder.textViewItem.setText(ingredient.getIngredientDescription());
+                viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onEditButtonClicked();
+                    }
+                });
+
+                viewHolder.removeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRemoveButtonClicked();
+                    }
+                });
             }
             if (ingredient != null && ingredient.isFirst()) {
                 viewHolder.headerItem.setText(ingredient.getCategory());
@@ -199,6 +262,8 @@ public class IngredientsActivity extends AppCompatActivity {
         private class ViewHolderItem {
             TextView textViewItem;
             TextView headerItem;
+            ImageView editButton;
+            ImageView removeButton;
         }
     }
 }

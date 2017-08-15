@@ -15,10 +15,15 @@
     <string name="button_view_boards">My Boards</string>
     <string name="button_logout">Logout</string>
     <string name="button_get_ingredients">Ingredients</string>
+    <string name="button_ok">Okay</string>
+    <string name="button_cancel">Cancel</string>
 
     <string name="button_my_pins_description">Get Shopping List</string>
 
     <string name="pinterest_login">Pinterest Login</string>
     <string name="button_remove_description">Remove Ingredient</string>
     <string name="button_edit_description">Edit Ingredient</string>
+
+    <string name="ingredient_remove_alert">Delete Ingredient</string>
+    <string name="ingredient_remove_message">Are you sure you want to delete the ingredient \'%s\'?</string>
 </resources>

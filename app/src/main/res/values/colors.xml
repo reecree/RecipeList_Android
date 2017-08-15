@@ -3,9 +3,6 @@
     <color name="colorPrimary">#B51515</color>
     <color name="colorPrimaryDark">#951515</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorLightGrey">#202020</color>
     <color name="colorGrey">#CCCCCC</color>
-    <color name="colorDarkGrey">#EEEEEE</color>
     <color name="colorBlue">#0000FF</color>
-    <color name="colorLightBlue">#0000BB</color>
 </resources>

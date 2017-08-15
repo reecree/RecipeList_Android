@@ -70,6 +70,23 @@ public class ShoppingList {
         }
     }
 
+    public void remove(int pos) {
+        int count = 0;
+        for(List<String> categorySection : _categories.values()) {
+            if(pos < count + categorySection.size()) {
+                Ingredient removedIngredient =
+                        _combinedIngredientMap.remove(categorySection.remove(pos - count));
+                if(removedIngredient.isFirst()) {
+                    if(!categorySection.isEmpty()) {
+                        _combinedIngredientMap.get(categorySection.get(0)).setIsHeader(true);
+                    }
+                }
+                return;
+            }
+            count += categorySection.size();
+        }
+    }
+
     public void clear() {
         _combinedIngredientMap.clear();
     }
