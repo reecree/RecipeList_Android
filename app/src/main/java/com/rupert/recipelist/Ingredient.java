@@ -77,6 +77,27 @@ public class Ingredient {
         }
     }
 
+    public int getWholeNumber() {
+        return _ingredientAmount.getNumerator() / _ingredientAmount.getDenominator();
+    }
+
+    public int getNumerator() {
+        return _ingredientAmount.getNumerator() % _ingredientAmount.getDenominator();
+    }
+
+    public int getDenominator() {
+        return _ingredientAmount.getDenominator();
+    }
+
+    public void setAmountWithFraction(int wholeNumber, int numerator, int denominator) {
+        _ingredientAmount = new Fraction(numerator, denominator);
+        _ingredientAmount = _ingredientAmount.add(wholeNumber);
+    }
+
+    public void setIngredientUnits(String units) {
+        _ingredientUnits = units;
+    }
+
     private String getIngredientAmountPretty() {
         int a = _ingredientAmount.getNumerator() / _ingredientAmount.getDenominator();
         int b = _ingredientAmount.getNumerator() % _ingredientAmount.getDenominator();

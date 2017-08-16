@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -151,7 +153,7 @@ public class IngredientsActivity extends AppCompatActivity {
     private void onRemoveButtonClicked() {
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         } else {
             builder = new AlertDialog.Builder(this);
         }
@@ -168,11 +170,76 @@ public class IngredientsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
     private void onEditButtonClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_edit_ingredient, null);
+        final EditText unitText = view.findViewById(R.id.dialog_ingr_unit);
+        final EditText wholeNumText = view.findViewById(R.id.dialog_ingr_whole_num);
+        final EditText numeratorText = view.findViewById(R.id.dialog_ingr_numerator);
+        final EditText denominatorText = view.findViewById(R.id.dialog_ingr_den);
+
+        final EditText nameText = view.findViewById(R.id.dialog_ingr_name);
+
+        final Ingredient ingredient = (Ingredient)_ingredientAdapter.getItem(_selectedIngredientPos);
+        wholeNumText.setText(String.valueOf(ingredient.getWholeNumber()));
+        if(ingredient.getNumerator() > 0) numeratorText.setText(String.valueOf(ingredient.getNumerator()));
+        if(ingredient.getDenominator() > 0) denominatorText.setText(String.valueOf(ingredient.getDenominator()));
+        if(!ingredient.getIngredientUnits().isEmpty()) unitText.setText(ingredient.getIngredientUnits());
+        nameText.setText(ingredient.getPrettyIngredientName());
+
+        builder.setView(view)
+                .setTitle(R.string.dialog_ingr_edit_title)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String wholeNumResp = wholeNumText.getText().toString();
+                        String numeratorResp = numeratorText.getText().toString();
+                        String denominatorResp = denominatorText.getText().toString();
+                        String unitResp = unitText.getText().toString();
+                        String nameResp = nameText.getText().toString();
+                        if(nameResp.isEmpty()) {
+                            showInputAlert(getResources().getString(R.string.dialog_alert_empty_name));
+                            return;
+                        }
+                        if((wholeNumResp.isEmpty() && numeratorResp.isEmpty() ||
+                                (wholeNumResp.equals("0") && wholeNumResp.equals("0")))) {
+                            showInputAlert(getResources().getString(R.string.dialog_alert_empty_numers));
+                            return;
+                        }
+
+                        ingredient.setAmountWithFraction(
+                                wholeNumResp.isEmpty() ? 0 : Integer.valueOf(wholeNumResp),
+                                numeratorResp.isEmpty() ? 0 : Integer.valueOf(numeratorResp),
+                                denominatorResp.isEmpty() || denominatorResp.equals("0") ? 1 : Integer.valueOf(denominatorResp));
+                        ingredient.setPrettyName(nameResp);
+                        ingredient.setIngredientUnits(unitResp);
+                        _ingredientAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+                .show();
+    }
+
+    private void showInputAlert(String message) {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+
+        builder.setTitle(getResources().getString(R.string.dialog_alert_input_title))
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private class IngredientAdapter extends BaseAdapter {
