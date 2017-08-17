@@ -8,8 +8,7 @@
     <string name="title_activity_my_pins">MyPinsActivity</string>
     <string name="title_activity_ingredients">IngredientsActivity</string>
 
-    <string name="board_name_key">boardName</string>
-    <string name="board_id_key">boardName</string>
+    <string name="toast_no_ingredient">Error:\nSelected Pin Has No Ingredient Information</string>
 
     <string name="button_view_pins">My Pins</string>
     <string name="button_view_boards">My Boards</string>
@@ -32,8 +31,10 @@
 
     <string name="dialog_ingr_units">Units</string>
     <string name="dialog_ingr_name">Name</string>
+    <string name="dialog_ingr_category">Category</string>
     <string name="dialog_alert_empty_name">Ingredient name cannot be empty</string>
     <string name="dialog_alert_input_title">Input Error</string>
-    <string name="dialog_alert_empty_numers">Must set an amount for ingredient</string>
+    <string name="dialog_alert_empty_numbers">Must set an amount for ingredient</string>
+    <string name="dialog_alert_empty_category">Ingredient category cannot be empty</string>
     <string name="dialog_ingr_edit_title">Edit Ingredient</string>
 </resources>

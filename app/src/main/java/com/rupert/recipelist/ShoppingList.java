@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,6 +102,10 @@ public class ShoppingList {
         }
     }
 
+    public Set<String> getCategoryNameSet() {
+        return _categories.keySet();
+    }
+
     public int size() {
         return _combinedIngredientMap.size();
     }
@@ -114,6 +119,40 @@ public class ShoppingList {
             count += categorySection.size();
         }
         return null;
+    }
+
+    public void update(Ingredient ingredient, String newName, String newCategory) {
+        String originalName = ingredient.getPrettyIngredientName();
+        String originalCategory = ingredient.getCategory();
+        if(originalName.equals(newName) && originalCategory.equals(newCategory))
+            return;
+
+        if(!originalName.equals(newName)) {
+            Ingredient ingr = _combinedIngredientMap.remove(originalName);
+            _combinedIngredientMap.put(newName, ingr);
+        }
+
+        _categories.get(originalCategory).remove(originalName);
+        if(_categories.containsKey(newCategory)) {
+            _categories.get(newCategory).add(newName);
+            ingredient.setIsHeader(false);
+        }
+        else {
+            ArrayList<String> newList = new ArrayList<String>();
+            newList.add(newName);
+            _categories.put(newCategory, newList);
+            ingredient.setIsHeader(true);
+        }
+
+        if(_categories.get(originalCategory).isEmpty()) {
+            _categories.remove(originalCategory);
+        }
+        else {
+            _combinedIngredientMap.get(_categories.get(originalCategory).get(0)).setIsHeader(true);
+        }
+
+        ingredient.setCategory(newCategory);
+        ingredient.setPrettyName(newName);
     }
 
     private String appendUnitsToName(String originalName, String units) {

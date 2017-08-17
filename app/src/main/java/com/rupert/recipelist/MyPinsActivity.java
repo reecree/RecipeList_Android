@@ -97,7 +97,8 @@ public class MyPinsActivity extends AppCompatActivity {
         String metadata = ((PDKPin) _pinAdapter.getItem(pos)).getMetadata();
 
         if(metadata == null || metadata.isEmpty() || metadata.equals(Globals.EMPTY_JSON)) {
-            Toast toast = Toast.makeText(getApplicationContext(), Globals.NO_INGREDIENT_MESSAGE, Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    getResources().getString(R.string.toast_no_ingredient), Toast.LENGTH_SHORT);
             toast.show();
             return;
         }

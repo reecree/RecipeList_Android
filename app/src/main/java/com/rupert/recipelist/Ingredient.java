@@ -98,6 +98,10 @@ public class Ingredient {
         _ingredientUnits = units;
     }
 
+    public void setCategory(String category) {
+        _category = category;
+    }
+
     private String getIngredientAmountPretty() {
         int a = _ingredientAmount.getNumerator() / _ingredientAmount.getDenominator();
         int b = _ingredientAmount.getNumerator() % _ingredientAmount.getDenominator();

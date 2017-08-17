@@ -65,33 +65,19 @@
             android:hint="@string/number_1"
             android:textSize="18sp"/>
     </RelativeLayout>
-    <!--<RelativeLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content">-->
-        <EditText
-            android:id="@+id/dialog_ingr_unit"
-            android:inputType="text"
-            android:maxLines="1"
-            android:maxLength="25"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="8dp"
-            android:textSize="18sp"
-            android:hint="@string/dialog_ingr_units"/>
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_ingr_unit_text"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="2dp"-->
-            <!--android:layout_marginEnd="2dp"-->
-            <!--android:layout_toEndOf="@+id/dialog_ingr_unit"-->
-            <!--android:layout_alignBaseline="@+id/dialog_ingr_unit"-->
-            <!--android:text="@string/dialog_ingr_units"-->
-            <!--android:textSize="18sp"/>-->
-    <!--</RelativeLayout>-->
+    <EditText
+        android:id="@+id/dialog_ingr_unit"
+        android:inputType="text"
+        android:maxLines="1"
+        android:maxLength="25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="18sp"
+        android:hint="@string/dialog_ingr_units"/>
     <EditText
         android:id="@+id/dialog_ingr_name"
         android:inputType="text"
@@ -105,4 +91,18 @@
         android:layout_marginBottom="8dp"
         android:textSize="18sp"
         android:hint="@string/dialog_ingr_name"/>
+    <AutoCompleteTextView
+        android:id="@+id/dialog_ingr_category"
+        android:maxLength="25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:minWidth="150dp"
+        android:completionThreshold="1"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="8dp"
+        android:hint="@string/dialog_ingr_category"
+        android:textSize="18sp"/>
 </LinearLayout>

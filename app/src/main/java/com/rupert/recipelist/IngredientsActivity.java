@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,11 +41,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class IngredientsActivity extends AppCompatActivity {
 
     private ListView _listView;
     private IngredientAdapter _ingredientAdapter;
+    private EditText _wholeNumET;
+    private EditText _numeratorET;
+    private EditText _denominatorET;
+    private EditText _nameET;
+    private EditText _unitET;
+    private AutoCompleteTextView _categoryTV;
     private View _selectedIngredientView = null;
     private int _selectedIngredientPos = -1;
 
@@ -91,11 +100,64 @@ public class IngredientsActivity extends AppCompatActivity {
         _ingredientAdapter.setIngredientList(ingredientList);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_ingredients, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                PDKClient.getInstance().logout();
+                Globals.RemoveAccessToken(this);
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void onRemoveOk() {
         if(_selectedIngredientPos >= 0) {
             _ingredientAdapter.removeItem(_selectedIngredientPos);
             onListItemClicked(_selectedIngredientPos, _selectedIngredientView);
         }
+    }
+
+    private void onEditOk() {
+        Ingredient ingredient = (Ingredient)_ingredientAdapter.getItem(_selectedIngredientPos);
+        String wholeNumResp = _wholeNumET.getText().toString();
+        String numeratorResp = _numeratorET.getText().toString();
+        String denominatorResp = _denominatorET.getText().toString();
+        String nameResp = _nameET.getText().toString().trim();
+        String categoryResp = _categoryTV.getText().toString().trim();
+
+        if(nameResp.isEmpty()) {
+            showInputAlert(getResources().getString(R.string.dialog_alert_empty_name));
+            return;
+        }
+        if((wholeNumResp.isEmpty() && numeratorResp.isEmpty() ||
+                (wholeNumResp.equals("0") && numeratorResp.equals("0")))) {
+            showInputAlert(getResources().getString(R.string.dialog_alert_empty_numbers));
+            return;
+        }
+        if(categoryResp.isEmpty()) {
+            showInputAlert(getResources().getString(R.string.dialog_alert_empty_category));
+        }
+
+        ingredient.setAmountWithFraction(
+                wholeNumResp.isEmpty() ? 0 : Integer.valueOf(wholeNumResp),
+                numeratorResp.isEmpty() ? 0 : Integer.valueOf(numeratorResp),
+                denominatorResp.isEmpty() || denominatorResp.equals("0") ? 1 : Integer.valueOf(denominatorResp));
+        ingredient.setIngredientUnits(_unitET.getText().toString().trim());
+        _ingredientAdapter.updateIngredientList(ingredient, nameResp, categoryResp);
+
+        onListItemClicked(_selectedIngredientPos, _selectedIngredientView);
+
     }
 
     private void setVisibility(View v, List<Integer> ids, int visibility) {
@@ -129,27 +191,6 @@ public class IngredientsActivity extends AppCompatActivity {
         _selectedIngredientView = v;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_ingredients, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_logout:
-                PDKClient.getInstance().logout();
-                Globals.RemoveAccessToken(this);
-                Intent i = new Intent(this, MainActivity.class);
-                startActivity(i);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void onRemoveButtonClicked() {
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -166,10 +207,7 @@ public class IngredientsActivity extends AppCompatActivity {
                         onRemoveOk();
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
+                .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
@@ -177,54 +215,43 @@ public class IngredientsActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit_ingredient, null);
-        final EditText unitText = view.findViewById(R.id.dialog_ingr_unit);
-        final EditText wholeNumText = view.findViewById(R.id.dialog_ingr_whole_num);
-        final EditText numeratorText = view.findViewById(R.id.dialog_ingr_numerator);
-        final EditText denominatorText = view.findViewById(R.id.dialog_ingr_den);
 
-        final EditText nameText = view.findViewById(R.id.dialog_ingr_name);
+        Ingredient ingredient = (Ingredient)_ingredientAdapter.getItem(_selectedIngredientPos);
+        _wholeNumET = view.findViewById(R.id.dialog_ingr_whole_num);
+        _numeratorET = view.findViewById(R.id.dialog_ingr_numerator);
+        _denominatorET = view.findViewById(R.id.dialog_ingr_den);
+        _unitET = view.findViewById(R.id.dialog_ingr_unit);
+        _nameET = view.findViewById(R.id.dialog_ingr_name);
+        _categoryTV = view.findViewById(R.id.dialog_ingr_category);
 
-        final Ingredient ingredient = (Ingredient)_ingredientAdapter.getItem(_selectedIngredientPos);
-        wholeNumText.setText(String.valueOf(ingredient.getWholeNumber()));
-        if(ingredient.getNumerator() > 0) numeratorText.setText(String.valueOf(ingredient.getNumerator()));
-        if(ingredient.getDenominator() > 0) denominatorText.setText(String.valueOf(ingredient.getDenominator()));
-        if(!ingredient.getIngredientUnits().isEmpty()) unitText.setText(ingredient.getIngredientUnits());
-        nameText.setText(ingredient.getPrettyIngredientName());
+        _wholeNumET.setText(String.valueOf(ingredient.getWholeNumber()));
+        _nameET.setText(ingredient.getPrettyIngredientName());
+        if(ingredient.getNumerator() > 0) {
+            _numeratorET.setText(String.valueOf(ingredient.getNumerator()));
+        }
+        if(ingredient.getDenominator() > 0) {
+            _denominatorET.setText(String.valueOf(ingredient.getDenominator()));
+        }
+        if(!ingredient.getIngredientUnits().isEmpty()) {
+            _unitET.setText(ingredient.getIngredientUnits());
+        }
+
+        List<String> categoryNameList = new ArrayList<String>(_ingredientAdapter.getIngredientList().getCategoryNameSet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(),
+                android.R.layout.simple_dropdown_item_1line, categoryNameList);
+
+        _categoryTV.setAdapter(adapter);
+        _categoryTV.setText(ingredient.getCategory());
 
         builder.setView(view)
                 .setTitle(R.string.dialog_ingr_edit_title)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String wholeNumResp = wholeNumText.getText().toString();
-                        String numeratorResp = numeratorText.getText().toString();
-                        String denominatorResp = denominatorText.getText().toString();
-                        String unitResp = unitText.getText().toString();
-                        String nameResp = nameText.getText().toString();
-                        if(nameResp.isEmpty()) {
-                            showInputAlert(getResources().getString(R.string.dialog_alert_empty_name));
-                            return;
-                        }
-                        if((wholeNumResp.isEmpty() && numeratorResp.isEmpty() ||
-                                (wholeNumResp.equals("0") && wholeNumResp.equals("0")))) {
-                            showInputAlert(getResources().getString(R.string.dialog_alert_empty_numers));
-                            return;
-                        }
-
-                        ingredient.setAmountWithFraction(
-                                wholeNumResp.isEmpty() ? 0 : Integer.valueOf(wholeNumResp),
-                                numeratorResp.isEmpty() ? 0 : Integer.valueOf(numeratorResp),
-                                denominatorResp.isEmpty() || denominatorResp.equals("0") ? 1 : Integer.valueOf(denominatorResp));
-                        ingredient.setPrettyName(nameResp);
-                        ingredient.setIngredientUnits(unitResp);
-                        _ingredientAdapter.notifyDataSetChanged();
+                        onEditOk();
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                })
+                .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 
@@ -288,10 +315,10 @@ public class IngredientsActivity extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.list_item_ingredient, parent, false);
 
                 viewHolder = new IngredientsActivity.IngredientAdapter.ViewHolderItem();
-                viewHolder.textViewItem = (TextView) convertView.findViewById(R.id.title);
-                viewHolder.headerItem = (TextView) convertView.findViewById(R.id.separator);
-                viewHolder.editButton = (ImageView) convertView.findViewById(R.id.edit_button);
-                viewHolder.removeButton = (ImageView) convertView.findViewById(R.id.remove_button);
+                viewHolder.textViewItem = convertView.findViewById(R.id.title);
+                viewHolder.headerItem = convertView.findViewById(R.id.separator);
+                viewHolder.editButton = convertView.findViewById(R.id.edit_button);
+                viewHolder.removeButton = convertView.findViewById(R.id.remove_button);
 
                 convertView.setTag(viewHolder);
             } else {
@@ -324,6 +351,11 @@ public class IngredientsActivity extends AppCompatActivity {
             }
 
             return convertView;
+        }
+
+        public void updateIngredientList(Ingredient ingredient, String newName, String newCategory) {
+            _ingredientList.update(ingredient, newName, newCategory);
+            notifyDataSetChanged();
         }
 
         private class ViewHolderItem {
