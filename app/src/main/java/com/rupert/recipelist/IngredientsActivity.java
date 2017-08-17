@@ -47,6 +47,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
     private ListView _listView;
     private IngredientAdapter _ingredientAdapter;
+    private ImageView _addButton;
     private EditText _wholeNumET;
     private EditText _numeratorET;
     private EditText _denominatorET;
@@ -67,6 +68,14 @@ public class IngredientsActivity extends AppCompatActivity {
         _listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> list, View v, int pos, long id) {
                 onListItemClicked(pos, v);
+            }
+        });
+
+        _addButton= (ImageView) findViewById(R.id.ingredient_add_button);
+        _addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddIngredientClicked();
             }
         });
 
@@ -136,18 +145,7 @@ public class IngredientsActivity extends AppCompatActivity {
         String nameResp = _nameET.getText().toString().trim();
         String categoryResp = _categoryTV.getText().toString().trim();
 
-        if(nameResp.isEmpty()) {
-            showInputAlert(getResources().getString(R.string.dialog_alert_empty_name));
-            return;
-        }
-        if((wholeNumResp.isEmpty() && numeratorResp.isEmpty() ||
-                (wholeNumResp.equals("0") && numeratorResp.equals("0")))) {
-            showInputAlert(getResources().getString(R.string.dialog_alert_empty_numbers));
-            return;
-        }
-        if(categoryResp.isEmpty()) {
-            showInputAlert(getResources().getString(R.string.dialog_alert_empty_category));
-        }
+        if(checkEditTextResponses(wholeNumResp, numeratorResp, nameResp, categoryResp)) return;
 
         ingredient.setAmountWithFraction(
                 wholeNumResp.isEmpty() ? 0 : Integer.valueOf(wholeNumResp),
@@ -158,6 +156,42 @@ public class IngredientsActivity extends AppCompatActivity {
 
         onListItemClicked(_selectedIngredientPos, _selectedIngredientView);
 
+    }
+
+    private void onAddOk() {
+        String wholeNumResp = _wholeNumET.getText().toString();
+        String numeratorResp = _numeratorET.getText().toString();
+        String denominatorResp = _denominatorET.getText().toString();
+        String nameResp = _nameET.getText().toString().trim();
+        String categoryResp = _categoryTV.getText().toString().trim();
+        String unitResp = _unitET.getText().toString().trim();
+
+        if(checkEditTextResponses(wholeNumResp, numeratorResp, nameResp, categoryResp)) return;
+
+        Ingredient ingredient = new Ingredient(nameResp,
+                wholeNumResp.isEmpty() ? 0 : Integer.valueOf(wholeNumResp),
+                numeratorResp.isEmpty() ? 0 : Integer.valueOf(numeratorResp),
+                denominatorResp.isEmpty() || denominatorResp.equals("0") ? 1 : Integer.valueOf(denominatorResp),
+                unitResp, categoryResp);
+        _ingredientAdapter.addItem(ingredient);
+    }
+
+    private boolean checkEditTextResponses(String wholeNum, String numerator, String name, String category) {
+        if(name.isEmpty()) {
+            showInputAlert(getResources().getString(R.string.dialog_alert_empty_name));
+            return true;
+        }
+        if((wholeNum.isEmpty() && numerator.isEmpty() ||
+                (wholeNum.equals("0") && numerator.equals("0")))) {
+            showInputAlert(getResources().getString(R.string.dialog_alert_empty_numbers));
+            return true;
+        }
+        if(category.isEmpty()) {
+            showInputAlert(getResources().getString(R.string.dialog_alert_empty_category));
+            return true;
+        }
+
+        return false;
     }
 
     private void setVisibility(View v, List<Integer> ids, int visibility) {
@@ -208,6 +242,43 @@ public class IngredientsActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void onAddIngredientClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_edit_ingredient, null);
+
+        _wholeNumET = view.findViewById(R.id.dialog_ingr_whole_num);
+        _numeratorET = view.findViewById(R.id.dialog_ingr_numerator);
+        _denominatorET = view.findViewById(R.id.dialog_ingr_den);
+        _unitET = view.findViewById(R.id.dialog_ingr_unit);
+        _nameET = view.findViewById(R.id.dialog_ingr_name);
+        _categoryTV = view.findViewById(R.id.dialog_ingr_category);
+
+        _wholeNumET.setText("");
+        _nameET.setText("");
+        _numeratorET.setText("");
+        _denominatorET.setText("");
+        _unitET.setText("");
+
+        List<String> categoryNameList = new ArrayList<String>(_ingredientAdapter.getIngredientList().getCategoryNameSet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(),
+                android.R.layout.simple_dropdown_item_1line, categoryNameList);
+
+        _categoryTV.setAdapter(adapter);
+        _categoryTV.setText("");
+
+        builder.setView(view)
+                .setTitle(R.string.dialog_ingr_add_title)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        onAddOk();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 
@@ -355,6 +426,11 @@ public class IngredientsActivity extends AppCompatActivity {
 
         public void updateIngredientList(Ingredient ingredient, String newName, String newCategory) {
             _ingredientList.update(ingredient, newName, newCategory);
+            notifyDataSetChanged();
+        }
+
+        public void addItem(Ingredient ingredient) {
+            _ingredientList.add(ingredient);
             notifyDataSetChanged();
         }
 

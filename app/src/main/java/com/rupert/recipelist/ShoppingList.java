@@ -58,7 +58,6 @@ public class ShoppingList {
                         _categories.put(ingredient.getCategory(), categoryList);
                         ingredient.setIsHeader(true);
                     }
-
                     else {
                         ingredient.setIsHeader(false);
                         _categories.get(ingredient.getCategory()).add(ingredientNameWithUnits);

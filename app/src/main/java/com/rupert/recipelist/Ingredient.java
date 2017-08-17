@@ -7,8 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Ingredient {
-    private String _rawIngredientName;
-    private String _rawIngredientAmount;
     private String _prettyIngredientName;
     private Fraction _ingredientAmount;
     private String _ingredientUnits;
@@ -16,12 +14,19 @@ public class Ingredient {
     private boolean _isHeader = false;
 
     public Ingredient(String name, String amount, String category) {
-        _rawIngredientName = name;
-        _rawIngredientAmount = amount;
         _prettyIngredientName = prettifyIngredientType(name);
         _ingredientAmount = parseIngredientAmount(amount);
         _ingredientUnits = parseIngredientUnits(amount);
         _category = category;
+    }
+
+    public Ingredient(String name, int wholeNum, int numerator, int denominator, String units, String category) {
+        _prettyIngredientName = name;
+        _ingredientAmount = new Fraction(numerator, denominator);
+        _ingredientAmount = _ingredientAmount.add(wholeNum);
+        _ingredientUnits = units;
+        _category = category;
+
     }
 
     public String getPrettyIngredientName() {
