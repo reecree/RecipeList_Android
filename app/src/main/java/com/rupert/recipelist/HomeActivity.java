@@ -103,11 +103,6 @@ public class HomeActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showDialog(String raw) {
-        RawResponseDialogFragment frag = RawResponseDialogFragment.newInstance(raw);
-        frag.show(getSupportFragmentManager(), "RawResponseDialogFragment");
-    }
-
     private void log(String msg) {
         if (!Utils.isEmpty(msg))
             Log.d(getClass().getName(), msg);

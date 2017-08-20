@@ -17,4 +17,18 @@
         android:id="@+id/title_view"
         android:layout_below="@+id/image_view"
         />
+
+    <ImageView
+        android:id="@+id/expand_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:adjustViewBounds="false"
+        android:clickable="true"
+        android:background="@drawable/partial_transparent_circle_button"
+        android:src="@drawable/ic_open_black"
+        android:contentDescription="@string/button_expand_description"
+        android:layout_alignTop="@+id/image_view"
+        android:layout_alignEnd="@+id/image_view"/>
 </RelativeLayout>

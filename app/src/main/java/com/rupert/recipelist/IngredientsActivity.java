@@ -80,33 +80,8 @@ public class IngredientsActivity extends AppCompatActivity {
         });
 
         Bundle extras = getIntent().getExtras();
-        String extraObject = null;
-        if (extras != null) {
-            extraObject = extras.getString(Globals.INGREDIENT_KEY);
-        }
 
-        ArrayList<String> metadataList = new Gson().fromJson(extraObject, ArrayList.class);
-        ShoppingList ingredientList = new ShoppingList();
-        for( String metadata : metadataList) {
-            try {
-                JSONObject jsonObject = new JSONObject(metadata);
-                JSONObject recipe = jsonObject.getJSONObject("recipe");
-                JSONArray ingredientArray = recipe.getJSONArray("ingredients");
-                for (int i = 0; i < ingredientArray.length(); i++) {
-                    JSONArray ingredientCategory = ingredientArray.getJSONObject(i).getJSONArray("ingredients");
-                    String category = ingredientArray.getJSONObject(i).getString("category");
-                    for (int j = 0; j < ingredientCategory.length(); j++) {
-                        JSONObject ingredient = ingredientCategory.getJSONObject(j);
-                        ingredientList.add(new Ingredient(ingredient.getString("name"),
-                                                          ingredient.getString("amount"),
-                                                          category));
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        _ingredientAdapter.setIngredientList(ingredientList);
+        _ingredientAdapter.setIngredientList(parseIngredients(extras.getString(Globals.INGREDIENT_KEY)));
     }
 
     @Override
@@ -338,6 +313,32 @@ public class IngredientsActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    private ShoppingList parseIngredients(String extraObject) {
+        ArrayList<String> metadataList = new Gson().fromJson(extraObject, ArrayList.class);
+        ShoppingList ingredientList = new ShoppingList();
+        for( String metadata : metadataList) {
+            try {
+                JSONObject jsonObject = new JSONObject(metadata);
+                JSONObject recipe = jsonObject.getJSONObject("recipe");
+                JSONArray ingredientArray = recipe.getJSONArray("ingredients");
+                for (int i = 0; i < ingredientArray.length(); i++) {
+                    JSONArray ingredientCategory = ingredientArray.getJSONObject(i).getJSONArray("ingredients");
+                    String category = ingredientArray.getJSONObject(i).getString("category");
+                    for (int j = 0; j < ingredientCategory.length(); j++) {
+                        JSONObject ingredient = ingredientCategory.getJSONObject(j);
+                        ingredientList.add(new Ingredient(ingredient.getString("name"),
+                                ingredient.getString("amount"),
+                                category));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ingredientList;
     }
 
     private class IngredientAdapter extends BaseAdapter {
