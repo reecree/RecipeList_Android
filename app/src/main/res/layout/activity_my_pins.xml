@@ -56,9 +56,9 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
-        android:background="@drawable/partial_transparent_circle_button"
+        android:background="@drawable/transparent_circle_button"
         android:contentDescription="@string/exit_popout_description"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_exit_black"
+        android:src="@drawable/ic_clear_black_shadow"
         android:visibility="gone" />
 </RelativeLayout>
