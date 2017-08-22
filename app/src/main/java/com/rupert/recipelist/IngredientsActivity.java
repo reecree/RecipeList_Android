@@ -194,7 +194,7 @@ public class IngredientsActivity extends AppCompatActivity {
         }
 
         TextView subView = (TextView) v.findViewById(R.id.title);
-        subView.setBackgroundColor(getResources().getColor(R.color.colorGrey));
+        subView.setBackgroundColor(getResources().getColor(R.color.grey));
         setVisibility(v, Arrays.asList(R.id.edit_button, R.id.remove_button), View.VISIBLE);
         _selectedIngredientPos = pos;
         _selectedIngredientView = v;

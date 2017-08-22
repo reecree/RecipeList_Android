@@ -294,7 +294,7 @@ public class MyPinsActivity extends AppCompatActivity {
         }
         addLayoutToCustomGrid(categories, customGrid, this);
 
-        _recipeView.setBackgroundColor(getResources().getColor(R.color.colorTransparentBackground));
+        _recipeView.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
         _recipeView.setVisibility(View.VISIBLE);
     }
 
@@ -364,7 +364,7 @@ public class MyPinsActivity extends AppCompatActivity {
             noteView.setVisibility(View.GONE);
         }
 
-        _noMetadataView.setBackgroundColor(getResources().getColor(R.color.colorTransparentBackground));
+        _noMetadataView.setBackgroundColor(getResources().getColor(R.color.transparentBackground));
         _noMetadataView.setVisibility(View.VISIBLE);
     }
 
