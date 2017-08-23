@@ -119,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onLoginSuccess() {
-        Intent i = new Intent(this, HomeActivity.class);
+//        Intent i = new Intent(this, HomeActivity.class);
+        Intent i = new Intent(this, BaseActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();

@@ -43,4 +43,10 @@
     <string name="pin_recipe_ingrdient_header">Ingredients</string>
     <string name="pin_recipe_serving">Serves %s</string>
     <string name="exit_popout_description">Exit Pin View</string>
+
+    <string name="home_list_tab">Shopping List</string>
+    <string name="home_recipe_tab">Recipe</string>
+    <string name="base_shopping_ingredient_num">%d ingredients</string>
+    <string name="base_no_shopping_list">No Shopping Lists Found</string>
+    <string name="base_no_recipes">No Recipes Found</string>
 </resources>

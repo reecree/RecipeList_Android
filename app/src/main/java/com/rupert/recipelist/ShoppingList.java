@@ -18,10 +18,22 @@ public class ShoppingList {
 
     private Map<String, Ingredient> _combinedIngredientMap;
     private Map<String, List<String>> _categories;
+    private String _listName;
 
     public ShoppingList() {
         _combinedIngredientMap = new HashMap<String,Ingredient>();
         _categories = new ArrayMap<String, List<String>>();
+        _listName = "Untitled";
+    }
+
+    public ShoppingList(String name) {
+        _combinedIngredientMap = new HashMap<String,Ingredient>();
+        _categories = new ArrayMap<String, List<String>>();
+        _listName = name;
+    }
+
+    public String getListName() {
+        return _listName;
     }
 
     public void add(Ingredient ingredient) {
@@ -161,9 +173,6 @@ public class ShoppingList {
     private boolean isBannedIngredient(String name) {
         Pattern p = Pattern.compile("^(salt|pepper|salt.*pepper)$", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(name);
-        if(m.find()) {
-            return true;
-        }
-        return false;
+        return m.find();
     }
 }

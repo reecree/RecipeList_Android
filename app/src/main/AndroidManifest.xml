@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rupert.recipelist">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,8 +25,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:name=".BaseActivity"
+            android:label="BaseActivity" >
+            <!--android:name=".HomeActivity"-->
+            <!--android:label="@string/title_activity_home" >-->
         </activity>
         <activity
             android:name=".MyBoardsActivity"
@@ -39,7 +43,5 @@
             android:label="@string/title_activity_ingredients" >
         </activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
